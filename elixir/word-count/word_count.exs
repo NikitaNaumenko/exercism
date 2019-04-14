@@ -8,8 +8,8 @@ defmodule Words do
   def count(sentence) do
     sentence 
     |> String.downcase()
-    |> String.replace(~r/[^\p{L}\d-]/u, " ")
-    |> String.split()
+    # |> String.replace( " ")
+    |> String.split(~r/[^\p{L}\d-]/u, trim: true)
     |> Enum.reduce(%{}, fn (word, acc) -> Map.update(acc, word, 1, &(&1 + 1)) end)
   end
 end
