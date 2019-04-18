@@ -2,8 +2,9 @@
 
 class Gigasecond
   class << self
+    POWER = 10e8
     def from(time)
-      time + 10**9
+      time + POWER
     end
   end
 end
