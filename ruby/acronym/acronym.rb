@@ -2,6 +2,6 @@
 
 class Acronym
   def self.abbreviate(string)
-    string.tr('-', ' ').split(' ').map(&:chr).map(&:upcase).join('')
+    string.scan(/\b\w/).map(&:upcase).join('')
   end
 end
