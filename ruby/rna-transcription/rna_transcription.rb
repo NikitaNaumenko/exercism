@@ -8,7 +8,7 @@ class Complement
     'A' => 'U'
   }.freeze
 
-  def self.of_dna(rna)
-    rna.chars.map(&DNA_TO_RNA).join
+  def self.of_dna(dna)
+    dna.chars.map(&DNA_TO_RNA).join
   end
 end
