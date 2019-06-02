@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Complement
-  MAP = {
+  DNA_TO_RNA = {
     'G' => 'C',
     'C' => 'G',
     'T' => 'A',
@@ -9,6 +9,6 @@ class Complement
   }.freeze
 
   def self.of_dna(rna)
-    rna.split('').map { |r| MAP[r] }.join
+    rna.chars.map(&DNA_TO_RNA).join
   end
 end
