@@ -8,7 +8,7 @@ class Pangram
   ].freeze
 
   def self.pangram?(sentence)
-    downcased_sentence = sentence.downcase
-    ALPHABET.all? { |letter| downcased_sentence.include?(letter) }
+    sentence = sentence.downcase
+    ALPHABET.all? { |letter| sentence.include?(letter) }
   end
 end
