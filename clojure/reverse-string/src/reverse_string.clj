@@ -7,5 +7,3 @@
       result
       (recur (- lastIndex 1)
              (str result (get s lastIndex))))))
-
-(reverse-string "Jopa")
