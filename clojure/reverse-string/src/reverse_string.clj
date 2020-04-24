@@ -1,11 +1,11 @@
 (ns reverse-string)
+(defn reduce [f init coll]
+  (loop [coll (seq coll)
+         result init]
+      (if (empty? coll)
+        result
+        (recur (rest coll)
+               (f result (first coll))))))
 
 (defn reverse-string [s]
-  (loop [firstItem (first s)
-         restItems (rest s)
-         result '()]
-    (if (= (count result) (count s))
-      (apply str result)
-      (recur (first restItems)
-             (rest restItems)
-             (conj result firstItem)))))
+  (apply str (reduce conj '() s)))
