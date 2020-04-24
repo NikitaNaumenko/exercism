@@ -1,9 +1,11 @@
 (ns reverse-string)
 
 (defn reverse-string [s]
-  (loop [lastIndex (- (count s) 1)
-         result ""]
+  (loop [firstItem (first s)
+         restItems (rest s)
+         result '()]
     (if (= (count result) (count s))
-      result
-      (recur (- lastIndex 1)
-             (str result (get s lastIndex))))))
+      (apply str result)
+      (recur (first restItems)
+             (rest restItems)
+             (conj result firstItem)))))
