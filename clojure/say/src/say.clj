@@ -1,38 +1,84 @@
-(ns say)
+(ns say
+  (:require [clojure.string :as str]))
 
-(def small-numbers ["zero", "one", "two", "three", "four", "five", "six",
-                    "seven", "eight", "nine", "ten", "eleven", "twelve",
-                    "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
-                    "eighteen", "nineteen"])
+(def specials
+  {1  "one"
+   2  "two"
+   3  "three"
+   4  "four"
+   5  "five"
+   6  "six"
+   7  "seven"
+   8  "eight"
+   9  "nine"
+   10 "ten"
+   11 "eleven"
+   12 "twelve"
+   13 "thirteen"
+   14 "fourteen"
+   15 "fifteen"
+   16 "sixteen"
+   17 "seventeen"
+   18 "eighteen"
+   19 "nineteen"})
 
-(def tens ["twenty", "thirty", "forty", "fifty", "sixty",
-           "seventy", "eighty", "ninety"])
+(def tens
+  {2 "twenty"
+   3 "thirty"
+   4 "forty"
+   5 "fifty"
+   6 "sixty"
+   7 "seventy"
+   8 "eighty"
+   9 "ninety"})
 
-(def trillions 1e12)
+(defn number-without-zero [num]
+  (loop [x num]
+   (cond
+    (= num 0)
+    nil
 
-(def big-nums
-  [[1000000000 "billion"]
-   [1000000    "million"]
-   [1000       "thousand"]
-   [100        "hundred"]])
+    (<= 1 num 19)
+    (get specials num)
 
-(defn select [n]
-  (first
-   (drop-while
-    #(< n (first %)) big-nums)))
+    (<= 20 num 99)
+    (let [tens-digit (quot num 10)
+          ones-digit (rem num 10)
+          ones-text  (get specials ones-digit)
+          tens-text  (str (get tens tens-digit)
+                          (if (not-empty ones-text) "-"))]
+      (str tens-text ones-text))
+
+    (<= 100 num 999)
+    (let [digit            (quot num 100)
+          remaining-digits (rem num 100)
+          remaining-text   (recur remaining-digits)]
+      (str/join " " [(get specials digit)
+                     "hundred"
+                     remaining-text]))) 
+    )
+  )
 
 (defn number [num]
   (cond
-    (not (<= 0 num (dec trillions))) (throw (IllegalArgumentException. "Invalid Number"))
-    (< num 20) (get small-numbers num)
-    (< num 100) (let [base (get tens (- (quot num 10) 2))
-                      remainder (mod num 10)
-                      ones  (get small-numbers remainder)]
-                  (if (zero? remainder) base (str base "-" ones)))
-    :else (let [[value unit] (select num)
-                d (quot num value)
-                remainder (mod num value)
-                base (get small-numbers d)]
-            (if (zero? remainder)
-              (str base " " unit)
-              (str (number d) " " unit " " (number remainder))))))
+    (= num 0)
+    "zero"
+
+    (not (<= 0 num 999999999999))
+    (throw (IllegalArgumentException. "Must be a valid number."))
+
+    :else
+    (let [digits         (str num)
+          num-digits     (count digits)
+          [start rest]   (split-at (mod num-digits 3) digits)
+          groups         (map (comp number-without-zero read-string #(apply str %))
+                              (concat (if-not (empty? start) (list start)) (partition 3 rest)))
+          group-and-size (map vector
+                              (reverse groups)
+                              '(nil "thousand" "million" "billion" "trillion"))]
+      (->> group-and-size
+           (filter #(not-empty (first %)))
+           reverse
+           (apply concat)
+           (str/join " ")
+           str/trim))))
