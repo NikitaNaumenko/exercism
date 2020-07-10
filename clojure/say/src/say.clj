@@ -33,13 +33,10 @@
    9 "ninety"})
 
 (defn number-without-zero [num]
-  (loop [x num]
-   (cond
-    (= num 0)
-    nil
+  (cond
+    (= num 0) nil
 
-    (<= 1 num 19)
-    (get specials num)
+    (<= 1 num 19) (get specials num)
 
     (<= 20 num 99)
     (let [tens-digit (quot num 10)
@@ -52,12 +49,10 @@
     (<= 100 num 999)
     (let [digit            (quot num 100)
           remaining-digits (rem num 100)
-          remaining-text   (recur remaining-digits)]
+          remaining-text   (number-without-zero remaining-digits)]
       (str/join " " [(get specials digit)
                      "hundred"
-                     remaining-text]))) 
-    )
-  )
+                     remaining-text]))))
 
 (defn number [num]
   (cond
