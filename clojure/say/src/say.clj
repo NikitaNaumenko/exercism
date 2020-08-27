@@ -34,7 +34,7 @@
 
 (defn number-without-zero [num]
   (cond
-    (= num 0) nil
+    (zero? num) nil
 
     (<= 1 num 19) (get specials num)
 
@@ -56,7 +56,7 @@
 
 (defn number [num]
   (cond
-    (= num 0)
+    (zero? num)
     "zero"
 
     (not (<= 0 num 999999999999))
