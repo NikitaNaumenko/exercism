@@ -33,12 +33,15 @@
    })
 
 (defn group-digits [num]
-  (->> (str num)
-       (map #(Character/getNumericValue %1))
-       (reverse)
-       (partition-all 3)
-       (map reverse)
-       (reverse)))
+  (if (zero? num)
+    '((0))
+    (->> num
+      (iterate #(quot % 10))
+      (take-while pos?)
+      (mapv #(mod % 10))
+      (partition-all 3)
+      (map reverse)
+      (reverse))))
 
 (defn unit->name [unit]
   (number->name unit))
@@ -77,9 +80,11 @@
                                         (str billion " billion " (insert-cardinality million thousand hundred)))))
 
 (defn translate [number]
-  (let [groups (group-digits number)
-        named-groups (map #(apply group->names %1) groups)]
-    (apply insert-cardinality named-groups)))
+  (->> number
+    (group-digits)
+    (map #(apply group->names %1))
+    (apply insert-cardinality)))
+
 
 (defn number [num]
   (if (or (< num 0) (> num 999999999999))
