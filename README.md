@@ -4,4 +4,5 @@
 * Elixir
 * Ruby
 * Swift
+* Go
 
